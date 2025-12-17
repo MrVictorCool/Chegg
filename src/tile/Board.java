@@ -1,12 +1,12 @@
 package tile;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import egg.ChickenEgg;
 import main.GamePanel;
 
 public class Board {
@@ -23,7 +23,6 @@ public class Board {
         try {
             itemFrame = ImageIO.read(getClass().getResourceAsStream("/misc/item_frame.png"));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             System.out.println("Opsie");
         }
@@ -40,6 +39,13 @@ public class Board {
                 board[row][column].yCoordinate = row;
                 board[row][column].worldX = column * gp.tileSize + xOffset;
                 board[row][column].worldY = row * gp.tileSize + yOffset;
+
+                if ((column + row) % 2 == 0 ) {board[row][column].egg = new ChickenEgg(
+                    column,
+                    row,
+                    board[row][column].worldX,
+                    board[row][column].worldY
+                );}
             }
         }
     }
@@ -48,6 +54,9 @@ public class Board {
         for (int row = 0; row < board.length; row++) {
             for (int column = 0; column < board[row].length; column++) {
                 board[row][column].draw(g2, gp);
+                if (board[row][column].egg != null) {
+                    board[row][column].egg.draw(g2, gp);
+                }
             }
         }
     }

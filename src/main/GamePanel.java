@@ -6,9 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import tile.Board;
@@ -78,6 +76,7 @@ public class GamePanel extends JPanel implements Runnable {
         // bg.drawImage(testImage, 16, 16, 16, 16, null);
 
         board.draw(bg);
+        
         
         bg.dispose();
 
