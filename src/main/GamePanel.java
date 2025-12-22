@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import tile.Board;
 
-public class GamePanel extends JPanel implements Runnable {
+public class GamePanel extends JPanel implements Runnable { 
 
     public final int VIRTUAL_SCREEN_WIDTH = 256; 
     public final int VIRTUAL_SCREEN_HEIGHT = 144;
@@ -26,6 +26,9 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     
     Board board = new Board(this);
+    Cursor cursor = new Cursor(this, board);
+    KeyHandler keyHandler = new KeyHandler();
+    MouseHandler mouseHandler = new MouseHandler(cursor, this, board);
     BufferedImage backBuffer = new BufferedImage(VIRTUAL_SCREEN_WIDTH, VIRTUAL_SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
 
     GamePanel() {
@@ -33,11 +36,14 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(Color.decode("#1c1827"));
         this.setDoubleBuffered(true); //For some reason boosts performance
         // TODO: this.addKeyListener(keyH);
+        this.addMouseListener(mouseHandler);
+        this.addMouseMotionListener(mouseHandler);
         this.setFocusable(true); //To be focused and receive input
     }
 
     public void setup() {
         board.initializeBoard();
+        cursor.initializeCursor();
     }
 
     public void startGameThread() {
@@ -47,14 +53,33 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
+        long frameStart;
+        long frameRemain;
+        final long frameDuration = 1_000_000_000 / FPS;
+        double delta = 1.0 / FPS;
+
         while (gameThread != null) {
-            update();
+            frameStart = System.nanoTime();
+            update(delta);
             repaint();
+            frameRemain = frameStart + frameDuration - System.nanoTime();
+            if (frameRemain > 0) {
+                long frameRemainMillis = frameRemain / 1_000_000;
+                // long frameRemainNanos = frameRemain - frameRemainMillis * 1_000_000;
+                try {
+                    Thread.sleep(frameRemainMillis);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            delta = (System.nanoTime() - frameStart) / 1_000_000_000.0; //, (int) frameRemainNanos
         }
     }
 
-    public void update() {
+    public void update(double delta) {
         //TODO: implement update
+        mouseHandler.scale = getScale();
+        System.out.println(delta + " That translates to: " + (1.0 / delta) + "fps"); 
     }
 
     @Override
@@ -67,15 +92,9 @@ public class GamePanel extends JPanel implements Runnable {
 
         bg.setColor(Color.BLACK);
         bg.fillRect(0, 0, VIRTUAL_SCREEN_WIDTH, VIRTUAL_SCREEN_HEIGHT);
-        // BufferedImage testImage = null;
-        // try {
-        //     testImage = ImageIO.read(getClass().getResourceAsStream("/eggs/chicken_spawn_egg.png"));
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
-        // bg.drawImage(testImage, 16, 16, 16, 16, null);
 
         board.draw(bg);
+        cursor.draw(bg, this);
         
         
         bg.dispose();

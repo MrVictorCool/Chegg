@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         
         Image icon = null;
-        JFrame window = new JFrame("Chegg dev0.0.1");
+        JFrame window = new JFrame("Chegg dev0.0.2");
         try {
             icon = ImageIO.read(Main.class.getResourceAsStream("/misc/icon256.png"));
         } catch (IOException e) {

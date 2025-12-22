@@ -13,9 +13,13 @@ public class Board {
 
     GamePanel gp;
     Tile[][] board = new Tile[8][8];
+    public int xOffset;
+    public int yOffset;
 
     public Board(GamePanel gp) {
         this.gp = gp;
+        xOffset = gp.VIRTUAL_SCREEN_WIDTH / 2 - board[0].length * gp.tileSize / 2;
+        yOffset = gp.VIRTUAL_SCREEN_HEIGHT / 2 - board.length * gp.tileSize / 2;
     }
 
     public void initializeBoard() {
@@ -26,9 +30,6 @@ public class Board {
             e.printStackTrace();
             System.out.println("Opsie");
         }
-
-        int xOffset = gp.VIRTUAL_SCREEN_WIDTH / 2 - board[0].length * gp.tileSize / 2;
-        int yOffset = gp.VIRTUAL_SCREEN_HEIGHT / 2 - board.length * gp.tileSize / 2;
 
         for (int row = 0; row < board.length; row++) {
             for (int column = 0; column < board[row].length; column++) {
