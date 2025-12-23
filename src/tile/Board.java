@@ -8,6 +8,8 @@ import javax.imageio.ImageIO;
 
 import egg.ChickenEgg;
 import main.GamePanel;
+import main.tools.Vector2;
+import main.tools.Vector2i;
 
 public class Board {
 
@@ -60,5 +62,25 @@ public class Board {
                 }
             }
         }
+    }
+
+    public Vector2i worldToCoordinate(int x, int y) {
+        x = (x - xOffset) / gp.tileSize;
+        y = (y - yOffset) / gp.tileSize;
+        return new Vector2i(x, y);
+    }
+
+    public Vector2i worldToCoordinate(Vector2i v2) {
+        return worldToCoordinate(v2.x, v2.y);
+    }
+    
+    public Vector2i coordinateToWorld(int x, int y) {
+        x = x * gp.tileSize + xOffset;
+        y = y * gp.tileSize + yOffset;
+        return new Vector2i(x, y);
+    }
+
+    public Vector2i coordinateToWorld(Vector2i v2) {
+        return coordinateToWorld(v2.x, v2.y);
     }
 }

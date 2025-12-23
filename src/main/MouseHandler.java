@@ -23,9 +23,10 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
     public void mouseMoved(MouseEvent e) {
         int mouseX = e.getX();
         int mouseY = e.getY();
+        
+        cursor.setCoordinates(board.worldToCoordinate(gp.screenToWorld(mouseX, mouseY)));
 
-        cursor.setxCoordinate((mouseX - board.xOffset) / (scale * gp.tileSize));
-        cursor.setyCoordinate((mouseY - board.yOffset) / (scale * gp.tileSize) - board.yOffset);
+        System.out.println(board.worldToCoordinate(gp.screenToWorld(mouseX, mouseY)));
     }
 
     @Override

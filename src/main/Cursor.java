@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import main.tools.Vector2i;
 import tile.Board;
 
 public class Cursor {
@@ -17,12 +18,25 @@ public class Cursor {
 
     public void setyCoordinate(int yCoordinate) {
         this.yCoordinate = yCoordinate;
-        worldX = xCoordinate * gp.tileSize + board.xOffset;
-        worldY = yCoordinate * gp.tileSize + board.yOffset;
+        worldY = yCoordinate * gp.tileSize + 8;
+        // System.out.println(yCoordinate + " " + xCoordinate);
     }
 
     public void setxCoordinate(int xCoordinate) {
         this.xCoordinate = xCoordinate;
+        worldX = xCoordinate * gp.tileSize;
+    }
+
+    public void setCoordinates(Vector2i v2) {
+        xCoordinate = v2.x;
+        yCoordinate = v2.y;
+        setWorldCoordinates(v2);
+    }
+
+    public void setWorldCoordinates(Vector2i v2) {
+        Vector2i worldCoordinates = new Vector2i(board.coordinateToWorld(v2));
+        worldX = worldCoordinates.x;
+        worldY = worldCoordinates.y;
     }
 
     public void draw(Graphics2D g2, GamePanel gp) {

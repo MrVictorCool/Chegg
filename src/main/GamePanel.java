@@ -7,8 +7,10 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import main.tools.Vector2i;
 import tile.Board;
 
 public class GamePanel extends JPanel implements Runnable { 
@@ -20,6 +22,18 @@ public class GamePanel extends JPanel implements Runnable {
     public final int screenTileHeight = VIRTUAL_SCREEN_HEIGHT / tileSize;
     public int screenWidth = 1024;
     public int screenHeight = 576;
+
+    private int xOffset;
+    public int getxOffset() {
+        return xOffset = (getWidth()  - VIRTUAL_SCREEN_WIDTH  * scale) / 2;
+    }
+
+    private int yOffset;
+    public int getyOffset() {
+        return yOffset = (getHeight() - VIRTUAL_SCREEN_HEIGHT * scale) / 2;
+    }
+
+    private int scale;
 
     int FPS = 60;
 
@@ -79,7 +93,6 @@ public class GamePanel extends JPanel implements Runnable {
     public void update(double delta) {
         //TODO: implement update
         mouseHandler.scale = getScale();
-        System.out.println(delta + " That translates to: " + (1.0 / delta) + "fps"); 
     }
 
     @Override
@@ -108,14 +121,12 @@ public class GamePanel extends JPanel implements Runnable {
         RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
     );
 
-    int scale = getScale();
-    int xOffset = (getWidth()  - VIRTUAL_SCREEN_WIDTH  * scale) / 2;
-    int yOffset = (getHeight() - VIRTUAL_SCREEN_HEIGHT * scale) / 2;
-
+    scale = getScale();
+    
     g.drawImage(
         backBuffer,
-        xOffset,
-        yOffset,
+        getxOffset(),
+        getyOffset(),
         VIRTUAL_SCREEN_WIDTH * scale,
         VIRTUAL_SCREEN_HEIGHT * scale,
         null
@@ -128,4 +139,14 @@ public class GamePanel extends JPanel implements Runnable {
         return Math.max(1, Math.min(scaleX, scaleY));
     }
 
+    public Vector2i screenToWorld(int x, int y) {
+        x = (x - xOffset) / scale;
+        y = (y - yOffset) / scale;
+
+        return new Vector2i(x, y);
+    }
+
+    public Vector2i screenToWorld(Vector2i v2) {
+        return screenToWorld(v2.x, v2.y);
+    }
 }
