@@ -6,12 +6,14 @@ import java.awt.image.BufferedImage;
 import main.GamePanel;
 import main.Team;
 import main.tools.OutlineCreator;
+import main.tools.Vector2i;
 
 public abstract class Egg {
 
     public String name;
     public BufferedImage image;
     protected BufferedImage outline;
+    public Vector2i[] movementVectors;
     public int xCoordinate, yCoordinate, worldX, worldY;
     public Team team;
 
@@ -31,5 +33,9 @@ public abstract class Egg {
     public void draw(Graphics2D g2, GamePanel gp) {
         // g2.drawImage(image, worldX, worldY, gp.tileSize, gp.tileSize, null);
         g2.drawImage(outline, worldX - 2, worldY - 2, gp.tileSize + 4, gp.tileSize + 4, null);
+    }
+
+    public Vector2i getCoordinates() {
+        return new Vector2i(xCoordinate, yCoordinate);
     }
 }

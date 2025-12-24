@@ -18,6 +18,8 @@ public class Board {
     public int xOffset;
     public int yOffset;
     public GameManager gameManager;
+    BufferedImage itemFrame = null;
+    BufferedImage glowItemFrame = null;
 
     public Board(GamePanel gp) {
         this.gp = gp;
@@ -27,9 +29,9 @@ public class Board {
 
     public void initializeBoard() {
         gameManager = gp.gameManager;
-        BufferedImage itemFrame = null;
         try {
             itemFrame = ImageIO.read(getClass().getResourceAsStream("/misc/item_frame.png"));
+            glowItemFrame = ImageIO.read(getClass().getResourceAsStream("/misc/glow_item_frame.png"));
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Opsie");
@@ -66,6 +68,21 @@ public class Board {
                 if (board[row][column].egg != null) {
                     board[row][column].egg.draw(g2, gp);
                 }
+            }
+        }
+    }
+
+    public void highlight(Vector2i[] tiles) {
+        clearHighlights();
+        for (Vector2i tilev2 : tiles) {
+            board[tilev2.x][tilev2.y].image = glowItemFrame;
+        }
+    }
+
+    public void clearHighlights() {
+        for (Tile[] tiles : board) {
+            for (Tile tile : tiles) {
+                tile.image = itemFrame;
             }
         }
     }

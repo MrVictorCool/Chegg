@@ -24,14 +24,14 @@ public class KeyHandler implements KeyListener {
         int code = e.getKeyCode();
 
         if (code == KeyEvent.VK_SPACE) {
-           gameManager.move(Vector2i.ZERO, Vector2i.DOWN);
+           board.clearHighlights();
         }
 
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        int code = e.getKeyCode();
+        // int code = e.getKeyCode();
     }
     
 }

@@ -69,4 +69,14 @@ public class Cursor {
         worldY = board.yOffset;
 
     }
+
+    public boolean isInBoard() {
+        if (xCoordinate <= board.board.length - 1 && xCoordinate >= 0) {
+            if (yCoordinate <= board.board[xCoordinate].length - 1 && yCoordinate >= 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

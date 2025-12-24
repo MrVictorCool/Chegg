@@ -37,13 +37,16 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
     @Override
     public void mouseClicked(MouseEvent e) {
         System.out.print("Click: ");
-        if (start == null) {
-            start = cursor.getCoordinates();
-            System.out.println("Starting point: " + start);
-        } else {
-            System.out.println("Destination: " + cursor.getCoordinates());
-            gameManager.move(start, cursor.getCoordinates());
-            start = null;
+        // if (start == null) {
+        //     start = cursor.getCoordinates();
+        //     System.out.println("Starting point: " + start);
+        // } else {
+        //     System.out.println("Destination: " + cursor.getCoordinates());
+        //     gameManager.move(start, cursor.getCoordinates());
+        //     start = null;
+        // }
+        if (cursor.isInBoard()) {
+            gameManager.handleClickAt(cursor.getCoordinates());
         }
     }
 

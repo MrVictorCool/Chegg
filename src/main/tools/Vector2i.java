@@ -28,13 +28,12 @@ public class Vector2i {
         return "[" + x + ", " + y + "]";
     }
 
-    public void add(int dX, int dY) {
-        x += dX;
-        y+= dY;
+    public Vector2i add(int dX, int dY) {
+        return new Vector2i(x + dX, y + dY);
     }
     
-    public void add(Vector2i v2) {
-        add(v2.x, v2.y);
+    public Vector2i add(Vector2i v2) {
+        return add(v2.x, v2.y);
     }
 
     public double getAngle() {
@@ -52,5 +51,16 @@ public class Vector2i {
     public boolean equals(Vector2i v2) {
         if (v2.x != x || v2.y != y) {return false;}
         return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Vector2i)) {
+            return false;
+        }
+
+        Vector2i v = (Vector2i) obj;
+
+        return equals(v);
     }
 }
