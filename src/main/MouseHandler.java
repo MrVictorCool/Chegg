@@ -4,6 +4,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import main.tools.Vector2i;
 import tile.Board;
 
 public class MouseHandler implements MouseListener, MouseMotionListener{
@@ -11,12 +12,16 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
     Cursor cursor;
     GamePanel gp;
     Board board;
+    GameManager gameManager;
     int scale;
+    Vector2i start = null;
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'mouseDragged'");
+        int mouseX = e.getX();
+        int mouseY = e.getY();
+        
+        cursor.setCoordinates(board.worldToCoordinate(gp.screenToWorld(mouseX, mouseY)));
     }
 
     @Override
@@ -26,25 +31,36 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
         
         cursor.setCoordinates(board.worldToCoordinate(gp.screenToWorld(mouseX, mouseY)));
 
-        System.out.println(board.worldToCoordinate(gp.screenToWorld(mouseX, mouseY)));
+        // System.out.println(board.worldToCoordinate(gp.screenToWorld(mouseX, mouseY)));
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'mouseClicked'");
+        System.out.print("Click: ");
+        if (start == null) {
+            start = cursor.getCoordinates();
+            System.out.println("Starting point: " + start);
+        } else {
+            System.out.println("Destination: " + cursor.getCoordinates());
+            gameManager.move(start, cursor.getCoordinates());
+            start = null;
+        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'mousePressed'");
+        int code = e.getButton();
+        if (code == MouseEvent.BUTTON1) {
+            System.out.println("Click registered");
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
+        int code = e.getButton();
+        if (code == MouseEvent.BUTTON1) {
+            System.out.println("Click release registered");
+        }
     }
 
     @Override
@@ -59,9 +75,10 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
         // throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
     }
 
-    public MouseHandler(Cursor cursor, GamePanel gp, Board board) {
+    public MouseHandler(Cursor cursor, GamePanel gp, Board board, GameManager gameManager) {
         this.cursor = cursor;
         this.gp = gp;
         this.board = board;
+        this.gameManager = gameManager;
     }
 }

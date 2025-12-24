@@ -7,16 +7,17 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import egg.ChickenEgg;
+import main.GameManager;
 import main.GamePanel;
-import main.tools.Vector2;
 import main.tools.Vector2i;
 
 public class Board {
 
     GamePanel gp;
-    Tile[][] board = new Tile[8][8];
+    public Tile[][] board = new Tile[8][8];
     public int xOffset;
     public int yOffset;
+    public GameManager gameManager;
 
     public Board(GamePanel gp) {
         this.gp = gp;
@@ -25,6 +26,7 @@ public class Board {
     }
 
     public void initializeBoard() {
+        gameManager = gp.gameManager;
         BufferedImage itemFrame = null;
         try {
             itemFrame = ImageIO.read(getClass().getResourceAsStream("/misc/item_frame.png"));
@@ -35,20 +37,24 @@ public class Board {
 
         for (int row = 0; row < board.length; row++) {
             for (int column = 0; column < board[row].length; column++) {
-                board[row][column] = new Tile();
+                board[column][row] = new Tile();
 
-                board[row][column].image = itemFrame;
-                board[row][column].xCoordinate = column;
-                board[row][column].yCoordinate = row;
-                board[row][column].worldX = column * gp.tileSize + xOffset;
-                board[row][column].worldY = row * gp.tileSize + yOffset;
+                board[column][row].image = itemFrame;
+                board[column][row].xCoordinate = column;
+                board[column][row].yCoordinate = row;
+                board[column][row].worldX = column * gp.tileSize + xOffset;
+                board[column][row].worldY = row * gp.tileSize + yOffset;
 
-                if ((column + row) % 2 == 0 ) {board[row][column].egg = new ChickenEgg(
-                    column,
-                    row,
-                    board[row][column].worldX,
-                    board[row][column].worldY
-                );}
+                if ((column + row) % 2 == 0 ) {
+
+                    board[column][row].egg = new ChickenEgg(
+                        column,
+                        row,
+                        board[column][row].worldX,
+                        board[column][row].worldY,
+                        gameManager.teams[column % 2]
+                    );
+                }
             }
         }
     }
@@ -65,8 +71,8 @@ public class Board {
     }
 
     public Vector2i worldToCoordinate(int x, int y) {
-        x = (x - xOffset) / gp.tileSize;
-        y = (y - yOffset) / gp.tileSize;
+        x = (int) Math.floor((double) (x - xOffset) / gp.tileSize);
+        y = (int) Math.floor((double) (y - yOffset) / gp.tileSize);
         return new Vector2i(x, y);
     }
 

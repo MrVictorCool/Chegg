@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import main.tools.Vector2i;
@@ -41,15 +40,16 @@ public class GamePanel extends JPanel implements Runnable {
     
     Board board = new Board(this);
     Cursor cursor = new Cursor(this, board);
-    KeyHandler keyHandler = new KeyHandler();
-    MouseHandler mouseHandler = new MouseHandler(cursor, this, board);
     BufferedImage backBuffer = new BufferedImage(VIRTUAL_SCREEN_WIDTH, VIRTUAL_SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
+    public GameManager gameManager = new GameManager(board);
+    KeyHandler keyHandler = new KeyHandler(board, gameManager);
+    MouseHandler mouseHandler = new MouseHandler(cursor, this, board, gameManager);
 
     GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.decode("#1c1827"));
         this.setDoubleBuffered(true); //For some reason boosts performance
-        // TODO: this.addKeyListener(keyH);
+        this.addKeyListener(keyHandler);
         this.addMouseListener(mouseHandler);
         this.addMouseMotionListener(mouseHandler);
         this.setFocusable(true); //To be focused and receive input

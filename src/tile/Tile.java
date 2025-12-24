@@ -15,4 +15,13 @@ public class Tile {
     public void draw(Graphics2D g2, GamePanel gp) {
         g2.drawImage(image, worldX, worldY, gp.tileSize, gp.tileSize, null);
     }
+
+    public void update() {
+        if (egg != null) {
+            egg.worldX = worldX;
+            egg.worldY = worldY;
+            egg.xCoordinate = xCoordinate;
+            egg.yCoordinate = yCoordinate;
+        }
+    }
 }

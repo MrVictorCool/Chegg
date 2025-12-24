@@ -33,6 +33,10 @@ public class Cursor {
         setWorldCoordinates(v2);
     }
 
+    public Vector2i getCoordinates() {
+        return new Vector2i(xCoordinate, yCoordinate);
+    }
+
     public void setWorldCoordinates(Vector2i v2) {
         Vector2i worldCoordinates = new Vector2i(board.coordinateToWorld(v2));
         worldX = worldCoordinates.x;

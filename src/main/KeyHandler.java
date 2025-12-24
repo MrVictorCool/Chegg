@@ -3,7 +3,18 @@ package main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import main.tools.Vector2i;
+import tile.Board;
+
 public class KeyHandler implements KeyListener {
+
+    Board board;
+    GameManager gameManager;
+    
+    public KeyHandler(Board board, GameManager gameManager) {
+        this.board = board;
+        this.gameManager = gameManager;
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {} //unused
@@ -12,8 +23,8 @@ public class KeyHandler implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
 
-        if (code == KeyEvent.VK_UP) {
-           
+        if (code == KeyEvent.VK_SPACE) {
+           gameManager.move(Vector2i.ZERO, Vector2i.DOWN);
         }
 
     }
