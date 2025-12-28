@@ -2,6 +2,8 @@ package main;
 
 import java.awt.Color;
 
+import main.tools.Vector2i;
+
 public class Team {
     public String name;
     public Color color;
@@ -13,7 +15,26 @@ public class Team {
 
     @Override
     public String toString() {
-        return "Team: " + name;
+        return name;
+    }
+
+    public boolean equals(Team t) {
+        if (t.name.equals(this.name)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Team)) {
+            return false;
+        }
+
+        Team t = (Team) obj;
+
+        return equals(t);
     }
     
 }

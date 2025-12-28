@@ -56,6 +56,14 @@ public class Vector2 {
         return new Vector2i((int) Math.round(x), (int) Math.round(y));
     }
 
+    public double distanceTo(Vector2 v2) {
+        return Math.pow(Math.pow(x - v2.x, 2) + Math.pow(y - v2.y, 2), 0.5);
+    }
+
+    public double distanceTo(Vector2 origin, Vector2 destination) {
+        return origin.distanceTo(destination);
+    }
+
     public boolean equals(Vector2 v2) {
         if (v2.x != x || v2.y != y) {return false;}
         return true;

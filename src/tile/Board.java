@@ -7,6 +7,9 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import egg.ChickenEgg;
+import egg.Egg;
+import egg.PigEgg;
+import egg.SheepEgg;
 import main.GameManager;
 import main.GamePanel;
 import main.tools.Vector2i;
@@ -47,18 +50,39 @@ public class Board {
                 board[column][row].worldX = column * gp.tileSize + xOffset;
                 board[column][row].worldY = row * gp.tileSize + yOffset;
 
-                if ((column + row) % 2 == 0 ) {
-
-                    board[column][row].egg = new ChickenEgg(
-                        column,
-                        row,
-                        board[column][row].worldX,
-                        board[column][row].worldY,
-                        gameManager.teams[column % 2]
-                    );
+                if ((column + row) % 2 == 0) {
+                    if (row > 5) {
+                        board[column][row].egg = new ChickenEgg(
+                            column,
+                            row,
+                            board[column][row].worldX,
+                            board[column][row].worldY,
+                            gameManager.teamList[0]
+                        );
+                    } else if (row < 2) {
+                        board[column][row].egg = new ChickenEgg(
+                            column,
+                            row,
+                            board[column][row].worldX,
+                            board[column][row].worldY,
+                            gameManager.teamList[1]
+                        );
+                    }
                 }
             }
         }
+
+        board[3][3].egg = new SheepEgg(
+            3, 3,
+            board[3][3].worldX,
+            board[3][3].worldY,
+            gameManager.teamList[1]);
+        board[4][4].egg = new PigEgg(
+            4, 4,
+            board[4][4].worldX,
+            board[4][4].worldY,
+            gameManager.teamList[0]);
+        
     }
 
     public void draw(Graphics2D g2) {
@@ -105,5 +129,13 @@ public class Board {
 
     public Vector2i coordinateToWorld(Vector2i v2) {
         return coordinateToWorld(v2.x, v2.y);
+    }
+
+    public Egg getEggAt(int x, int y) {
+        return board[x][y].egg;
+    }
+
+    public Egg getEggAt(Vector2i v2) {
+        return getEggAt(v2.x, v2.y);
     }
 }

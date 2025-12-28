@@ -3,7 +3,6 @@ package main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import main.tools.Vector2i;
 import tile.Board;
 
 public class KeyHandler implements KeyListener {

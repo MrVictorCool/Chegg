@@ -11,7 +11,8 @@ import tile.*;
 public class GameManager {
     
     Board board;
-    public Team[] teams;
+    public Team[] teamList;
+    public int currentTeam;
     List<Vector2i> posibleMoves = new ArrayList<>();
     Tile selectedTile;
     Egg selectedEgg;
@@ -19,21 +20,23 @@ public class GameManager {
 
     public GameManager(Board board) {
         this.board = board;
-        teams = new Team[2];
-        teams[0] = new Team("Red", Color.decode("#bd0a36"));
-        teams[1] = new Team("Blue", Color.decode("#0d638b"));
+        teamList = new Team[2];
+        teamList[0] = new Team("Red", Color.decode("#bd0a36"));
+        teamList[1] = new Team("Blue", Color.decode("#0d638b"));
+        currentTeam = 0;
     }
 
     public void handleClickAt(Vector2i v2) {
         if (eggSelected) {
             if (posibleMoves.contains(v2)) {
                 move(selectedEgg.getCoordinates(), v2);
+                passTurn();
                 deselect();
             } else {
                 deselect();
             }
         } else {
-            if (board.board[v2.x][v2.y].egg != null) {
+            if (board.board[v2.x][v2.y].egg != null && board.board[v2.x][v2.y].egg.team.equals(teamList[currentTeam])) {
                 select(v2);
             } else {
                 deselect();
@@ -54,8 +57,8 @@ public class GameManager {
         selectedEgg = board.board[v2.x][v2.y].egg;
         posibleMoves.clear();
 
-        for (Vector2i relativeMove : selectedEgg.movementVectors) {
-            Vector2i move = relativeMove.add(selectedEgg.getCoordinates());
+        for (Vector2i relativeMove : selectedEgg.getMoves(board)) {
+            Vector2i move = relativeMove; //relativeMove.add(selectedEgg.getCoordinates());
             if (move.x > -1 && move.x < 8 && move.y > -1 && move.y < 8) {
                 posibleMoves.add(move);
             }
@@ -71,5 +74,10 @@ public class GameManager {
         selectedEgg = null;
         posibleMoves.clear();
         board.clearHighlights();
+    }
+
+    private void passTurn() {
+        currentTeam = (currentTeam + 1) % teamList.length;
+        System.out.println("Current turn is: " + teamList[currentTeam]);
     }
 }

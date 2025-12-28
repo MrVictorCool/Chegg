@@ -91,7 +91,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update(double delta) {
-        //TODO: implement update
         mouseHandler.scale = getScale();
     }
 
