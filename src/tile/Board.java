@@ -6,23 +6,30 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import egg.ChickenEgg;
-import egg.Egg;
-import egg.PigEgg;
-import egg.SheepEgg;
+import egg.*;
 import main.GameManager;
 import main.GamePanel;
 import main.tools.Vector2i;
 
 public class Board {
 
-    GamePanel gp;
+    GamePanel gp; 
     public Tile[][] board = new Tile[8][8];
     public int xOffset;
     public int yOffset;
     public GameManager gameManager;
     BufferedImage itemFrame = null;
     BufferedImage glowItemFrame = null;
+    enum EggType{
+        CHICKEN,
+        HORSE,
+        PIG,
+        SHEEP,
+        SKELETON_HORSE,
+        SPIDER,
+        VILLAGER,
+        WANDERING_TRADER;
+    }
 
     public Board(GamePanel gp) {
         this.gp = gp;
@@ -37,7 +44,6 @@ public class Board {
             glowItemFrame = ImageIO.read(getClass().getResourceAsStream("/misc/glow_item_frame.png"));
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Opsie");
         }
 
         for (int row = 0; row < board.length; row++) {
@@ -50,47 +56,36 @@ public class Board {
                 board[column][row].worldX = column * gp.tileSize + xOffset;
                 board[column][row].worldY = row * gp.tileSize + yOffset;
 
-                if ((column + row) % 2 == 0) {
-                    if (row > 5) {
-                        board[column][row].egg = new ChickenEgg(
-                            column,
-                            row,
-                            board[column][row].worldX,
-                            board[column][row].worldY,
-                            gameManager.teamList[0]
-                        );
-                    } else if (row < 2) {
-                        board[column][row].egg = new ChickenEgg(
-                            column,
-                            row,
-                            board[column][row].worldX,
-                            board[column][row].worldY,
-                            gameManager.teamList[1]
-                        );
-                    }
+                if (row == 1 || row == 6) {
+                    createEggAt(EggType.CHICKEN, row == 1 ? 1 : 0, column, row);
                 }
             }
         }
 
-        board[3][3].egg = new SheepEgg(
-            3, 3,
-            board[3][3].worldX,
-            board[3][3].worldY,
-            gameManager.teamList[1]);
-        board[4][4].egg = new PigEgg(
-            4, 4,
-            board[4][4].worldX,
-            board[4][4].worldY,
-            gameManager.teamList[0]);
-        
+        createEggAt(EggType.VILLAGER, 0, 4, 7);
+        createEggAt(EggType.VILLAGER, 1, 4, 0);
+        createEggAt(EggType.WANDERING_TRADER, 0, 3, 7);
+        createEggAt(EggType.WANDERING_TRADER, 1, 3, 0);
+        createEggAt(EggType.HORSE, 0, 1,7);
+        createEggAt(EggType.HORSE, 0, 6,7);
+        createEggAt(EggType.HORSE, 1, 1,0);
+        createEggAt(EggType.HORSE, 1, 6,0);
+        createEggAt(EggType.SHEEP, 0, 2,7);
+        createEggAt(EggType.SHEEP, 0, 5,7);
+        createEggAt(EggType.SHEEP, 1, 2,0);
+        createEggAt(EggType.SHEEP, 1, 5,0);
+        createEggAt(EggType.PIG, 0, 0,7);
+        createEggAt(EggType.PIG, 0, 7,7);
+        createEggAt(EggType.PIG, 1, 0,0);
+        createEggAt(EggType.PIG, 1, 7,0);
     }
 
     public void draw(Graphics2D g2) {
         for (int row = 0; row < board.length; row++) {
             for (int column = 0; column < board[row].length; column++) {
                 board[row][column].draw(g2, gp);
-                if (board[row][column].egg != null) {
-                    board[row][column].egg.draw(g2, gp);
+                if (getEggAt(row, column) != null) {
+                    getEggAt(row, column).draw(g2, gp);
                 }
             }
         }
@@ -137,5 +132,57 @@ public class Board {
 
     public Egg getEggAt(Vector2i v2) {
         return getEggAt(v2.x, v2.y);
+    }
+
+    public void setEggAt(Egg egg, int x, int y) {
+        board[x][y].egg = egg;
+        board[x][y].update();
+    }
+
+    public void setEggAt(Egg egg, Vector2i v2) {
+        setEggAt(egg, v2.x, v2.y);
+    }
+
+    public void createEggAt(EggType eggType, int team, int x, int y) {
+        switch (eggType) {
+            case CHICKEN:
+                board[x][y].egg = new ChickenEgg();
+                break;
+            case HORSE:
+                board[x][y].egg = new HorseEgg();
+                break;
+            case PIG:
+                board[x][y].egg = new PigEgg();
+                break;
+            case SHEEP:
+                board[x][y].egg = new SheepEgg();
+                break;
+            case SKELETON_HORSE:
+                board[x][y].egg = new SkeletonHorseEgg();
+                break;
+            case SPIDER:
+                board[x][y].egg = new SpiderEgg();
+                break;
+            case VILLAGER:
+                board[x][y].egg = new VillagerEgg();
+                break;
+            case WANDERING_TRADER:
+                board[x][y].egg = new WanderingTraderEgg();
+                break;
+            default:
+                System.err.println(eggType + " not handled by createEggAt");
+                System.exit(1);
+        }
+
+        board[x][y].egg.initializeEgg(
+            x, y,
+            board[x][y].worldX,
+            board[x][y].worldY,
+            gameManager.teamList[team]
+        );
+    }
+
+    public void createEggAt(EggType eggType, int team, Vector2i v2) {
+        createEggAt(eggType, team, v2.x, v2.y);
     }
 }

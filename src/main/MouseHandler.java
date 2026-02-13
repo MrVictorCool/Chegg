@@ -56,7 +56,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
 
     @Override
     public void mousePressed(MouseEvent e) {
-        //TODO: Fix mouse not recognising mouse clicks
         int code = e.getButton();
         if (code == MouseEvent.BUTTON1) {
             clickPressed = gp.screenToWorld(mouseX, mouseY);

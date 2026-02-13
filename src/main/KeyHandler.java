@@ -22,8 +22,8 @@ public class KeyHandler implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
 
-        if (code == KeyEvent.VK_SPACE) {
-           board.clearHighlights();
+        if (code == KeyEvent.VK_F11) {
+            Main.fullscreen();
         }
 
     }

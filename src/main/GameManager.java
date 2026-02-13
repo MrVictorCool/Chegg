@@ -36,7 +36,7 @@ public class GameManager {
                 deselect();
             }
         } else {
-            if (board.board[v2.x][v2.y].egg != null && board.board[v2.x][v2.y].egg.team.equals(teamList[currentTeam])) {
+            if (board.getEggAt(v2) != null && board.getEggAt(v2).team.equals(teamList[currentTeam])) {
                 select(v2);
             } else {
                 deselect();
@@ -45,25 +45,29 @@ public class GameManager {
     }
 
     public void move(Vector2i start, Vector2i end) {
-        board.board[end.x][end.y].egg = board.board[start.x][start.y].egg;
-        board.board[start.x][start.y].egg = null;
-        board.board[end.x][end.y].update();
+        board.setEggAt(board.getEggAt(start), end);
+        board.setEggAt(null, start);
         System.out.println("Egg moved: " + board.board[end.x][end.y].egg.name + " " + board.board[end.x][end.y].egg.team);
     }
 
     public void select(Vector2i v2) {
         eggSelected = true;
         selectedTile = board.board[v2.x][v2.y];
-        selectedEgg = board.board[v2.x][v2.y].egg;
+        selectedEgg = board.getEggAt(v2);
         posibleMoves.clear();
 
-        for (Vector2i relativeMove : selectedEgg.getMoves(board)) {
-            Vector2i move = relativeMove; //relativeMove.add(selectedEgg.getCoordinates());
+        for (Vector2i moveCoordinates : selectedEgg.getMoves(board)) {
+            Vector2i move = moveCoordinates;
             if (move.x > -1 && move.x < 8 && move.y > -1 && move.y < 8) {
                 posibleMoves.add(move);
             }
         }
 
+        if (posibleMoves.size() == 0) {
+            deselect();
+            return;
+        }
+        
         board.highlight(posibleMoves.toArray(new Vector2i[0]));
         System.out.println(posibleMoves);
     }

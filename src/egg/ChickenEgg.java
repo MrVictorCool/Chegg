@@ -1,28 +1,64 @@
 package egg;
 
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
+import java.util.ArrayList;
+import java.util.List;
 
 import main.Team;
 import main.tools.Vector2i;
+import tile.Board;
 
 public class ChickenEgg extends Egg{
 
-    public ChickenEgg(int xCoordinate, int yCoordinate, int worldX, int worldY, Team team) {
-        super(xCoordinate, yCoordinate, worldX, worldY, team);
+    /**
+     * Represents to where this piece is able to move, only intended for UP and DOWN.
+     * Also derived from this is this piece's diagonal attacks and En Passant
+     */
+    Vector2i direction;
+
+    public ChickenEgg() {
         name = "Chicken egg";
-        movementVectors = new Vector2i[8];
-        movementVectors[0] = new Vector2i(-1, -1);
-        movementVectors[1] = new Vector2i(0, -1);
-        movementVectors[2] = new Vector2i(1, -1);
-        movementVectors[3] = new Vector2i(-1, 0);
-        movementVectors[4] = new Vector2i(1, 0);
-        movementVectors[5] = new Vector2i(-1, 1);
-        movementVectors[6] = new Vector2i(0, 1);
-        movementVectors[7] = new Vector2i(1, 1);
-        try {setImage(ImageIO.read(getClass().getResourceAsStream("/eggs/chicken_spawn_egg.png")));}
-        catch (IOException e) {e.printStackTrace();}
+        imagePath = "/eggs/chicken_spawn_egg.png";
+    }
+
+    @Override
+    public void initializeEgg(int xCoordinate, int yCoordinate, int worldX, int worldY, Team team) {
+        super.initializeEgg(xCoordinate, yCoordinate, worldX, worldY, team);
+        if (yCoordinate < 4) {
+            direction = Vector2i.DOWN;
+        } else {
+            direction = Vector2i.UP;
+        }
+    }
+
+    //TODO: Consider easier or cleaner implementation for pawn movement
+    //TODO: Add special pawn rules (en passant, promotion)
+    @Override
+    public Vector2i[] getMoves(Board board) {
+        List<Vector2i> moves = new ArrayList<>();
+        Vector2i target;
+
+        if (!getCoordinates().add(direction).isOnBound(board)) {return new Vector2i[0];}
+
+        if (board.getEggAt(getCoordinates().add(direction)) == null) {
+            moves.add(getCoordinates().add(direction));
+            if (yCoordinate == 6 && direction.equals(Vector2i.UP) || yCoordinate == 1 && direction.equals(Vector2i.DOWN)) {
+                moves.add(getCoordinates().add(direction.add(direction)));
+            }
+        }
+
+        target = getCoordinates().add(direction).add(Vector2i.LEFT);
+
+        if (board.getEggAt(target) != null && !board.getEggAt(target).isSameTeamAs(this) && target.isOnBound(board)) {
+            moves.add(target);
+        }
+
+        target = getCoordinates().add(direction).add(Vector2i.RIGHT);
+
+        if (board.getEggAt(target) != null && !board.getEggAt(target).isSameTeamAs(this) && target.isOnBound(board)) {
+            moves.add(target);
+        }
+
+        return moves.toArray(new Vector2i[0]);
     }
     
 }

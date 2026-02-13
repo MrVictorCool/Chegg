@@ -2,8 +2,6 @@ package main;
 
 import java.awt.Color;
 
-import main.tools.Vector2i;
-
 public class Team {
     public String name;
     public Color color;
