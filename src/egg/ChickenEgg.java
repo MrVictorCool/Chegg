@@ -13,7 +13,7 @@ public class ChickenEgg extends Egg{
      * Represents to where this piece is able to move, only intended for UP and DOWN.
      * Also derived from this is this piece's diagonal attacks and En Passant
      */
-    Vector2i direction;
+    public Vector2i direction;
 
     public ChickenEgg() {
         name = "Chicken egg";
@@ -31,7 +31,6 @@ public class ChickenEgg extends Egg{
     }
 
     //TODO: Consider easier or cleaner implementation for pawn movement
-    //TODO: Add special pawn rules (en passant, promotion)
     @Override
     public Vector2i[] getMoves(Board board) {
         List<Vector2i> moves = new ArrayList<>();
@@ -48,14 +47,18 @@ public class ChickenEgg extends Egg{
 
         target = getCoordinates().add(direction).add(Vector2i.LEFT);
 
-        if (board.getEggAt(target) != null && !board.getEggAt(target).isSameTeamAs(this) && target.isOnBound(board)) {
-            moves.add(target);
+        if (target.isOnBound(board)) {
+            if (board.getEggAt(target) != null && !board.getEggAt(target).isSameTeamAs(this) || target.equals(board.enPassantTile)) {
+                moves.add(target);
+            }
         }
 
         target = getCoordinates().add(direction).add(Vector2i.RIGHT);
 
-        if (board.getEggAt(target) != null && !board.getEggAt(target).isSameTeamAs(this) && target.isOnBound(board)) {
-            moves.add(target);
+        if (target.isOnBound(board)) {
+            if (board.getEggAt(target) != null && !board.getEggAt(target).isSameTeamAs(this) || target.equals(board.enPassantTile)) {
+                moves.add(target);
+            }
         }
 
         return moves.toArray(new Vector2i[0]);

@@ -81,6 +81,17 @@ public class Vector2i {
         return isOnBound(new Vector2i(board.board.length - 1, board.board[0].length - 1));
     }
 
+    /**
+     * Checks if the {@code Vector2i} is contained within the bound of {@code topLeft} to {@code bottomRight}.
+     * @param topLeft The top left corner, both x and y should be less or equal to {@code bottomRight}.
+     * @param bottomRight The top right corner, both x and y should be greater or equal to {@code topLeft}.
+     */
+    public boolean isOnBound(Vector2i topLeft, Vector2i bottomRight) {
+        System.out.println(this + " " + topLeft + " " + bottomRight);
+        if (x > bottomRight.x || y > bottomRight.y || x < topLeft.x || y < topLeft.y) {System.out.println("false");return false;}
+        System.out.println("true");return true;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Vector2i)) {

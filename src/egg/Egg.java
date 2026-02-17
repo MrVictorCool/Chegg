@@ -171,4 +171,24 @@ public abstract class Egg {
 
         return moves.toArray(new Vector2i[0]);
     }
+
+    /**
+     * @param step Indicates each move as relative vector.
+     * @param board The board from which the limits of size are taken (assumed to be a rectangle).
+     * @return The board coordinates of the first egg in that direction, or the edge of the board if nothing is found.
+     */
+    protected Vector2i scanForEggInVector(Vector2i step, Board board) {
+        Vector2i pointer = getCoordinates();
+        Vector2i target = pointer.add(step);
+
+        while(target.isOnBound(board)){
+            if (board.getEggAt(target) != null) {
+                return target;
+            }
+            pointer = Vector2i.ZERO.add(target);
+            target = pointer.add(step);
+        }
+
+        return pointer;
+    }
 }

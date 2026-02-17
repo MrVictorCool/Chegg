@@ -13,7 +13,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
     GamePanel gp;
     Board board;
     GameManager gameManager;
-    int scale, mouseX, mouseY;
+    int mouseX, mouseY;
     Vector2i clickPressed, clickReleased;
     Vector2i start = null;
 
@@ -95,9 +95,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
         //     gameManager.move(start, cursor.getCoordinates());
         //     start = null;
         // }
-        if (cursor.isInBoard()) {
-            gameManager.handleClickAt(cursor.getCoordinates());
-        }
+        gameManager.handleClickAt(cursor.getCoordinates());
     }
 
     public MouseHandler(Cursor cursor, GamePanel gp, Board board, GameManager gameManager) {

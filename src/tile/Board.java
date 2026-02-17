@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import egg.*;
 import main.GameManager;
 import main.GamePanel;
+import main.Team;
 import main.tools.Vector2i;
 
 public class Board {
@@ -18,18 +19,10 @@ public class Board {
     public int xOffset;
     public int yOffset;
     public GameManager gameManager;
+    public Vector2i enPassantTile = new Vector2i(-1, -1);
+    public Vector2i enPassantEggCoordinate = new Vector2i(-1, -1);
     BufferedImage itemFrame = null;
     BufferedImage glowItemFrame = null;
-    enum EggType{
-        CHICKEN,
-        HORSE,
-        PIG,
-        SHEEP,
-        SKELETON_HORSE,
-        SPIDER,
-        VILLAGER,
-        WANDERING_TRADER;
-    }
 
     public Board(GamePanel gp) {
         this.gp = gp;
@@ -66,18 +59,18 @@ public class Board {
         createEggAt(EggType.VILLAGER, 1, 4, 0);
         createEggAt(EggType.WANDERING_TRADER, 0, 3, 7);
         createEggAt(EggType.WANDERING_TRADER, 1, 3, 0);
-        createEggAt(EggType.HORSE, 0, 1,7);
-        createEggAt(EggType.HORSE, 0, 6,7);
-        createEggAt(EggType.HORSE, 1, 1,0);
-        createEggAt(EggType.HORSE, 1, 6,0);
-        createEggAt(EggType.SHEEP, 0, 2,7);
-        createEggAt(EggType.SHEEP, 0, 5,7);
-        createEggAt(EggType.SHEEP, 1, 2,0);
-        createEggAt(EggType.SHEEP, 1, 5,0);
-        createEggAt(EggType.PIG, 0, 0,7);
-        createEggAt(EggType.PIG, 0, 7,7);
-        createEggAt(EggType.PIG, 1, 0,0);
-        createEggAt(EggType.PIG, 1, 7,0);
+        createEggAt(EggType.HORSE, 0, 1, 7);
+        createEggAt(EggType.HORSE, 0, 6, 7);
+        createEggAt(EggType.HORSE, 1, 1, 0);
+        createEggAt(EggType.HORSE, 1, 6, 0);
+        createEggAt(EggType.SHEEP, 0, 2, 7);
+        createEggAt(EggType.SHEEP, 0, 5, 7);
+        createEggAt(EggType.SHEEP, 1, 2, 0);
+        createEggAt(EggType.SHEEP, 1, 5, 0);
+        createEggAt(EggType.PIG, 0, 0, 7);
+        createEggAt(EggType.PIG, 0, 7, 7);
+        createEggAt(EggType.PIG, 1, 0, 0);
+        createEggAt(EggType.PIG, 1, 7, 0);
     }
 
     public void draw(Graphics2D g2) {
@@ -143,7 +136,7 @@ public class Board {
         setEggAt(egg, v2.x, v2.y);
     }
 
-    public void createEggAt(EggType eggType, int team, int x, int y) {
+    public void createEggAt(EggType eggType, Team team, int x, int y) {
         switch (eggType) {
             case CHICKEN:
                 board[x][y].egg = new ChickenEgg();
@@ -178,11 +171,19 @@ public class Board {
             x, y,
             board[x][y].worldX,
             board[x][y].worldY,
-            gameManager.teamList[team]
+            team
         );
     }
 
+    public void createEggAt(EggType eggType, int team, int x, int y) {
+        createEggAt(eggType, gameManager.teamList[team], x, y);
+    }
+
     public void createEggAt(EggType eggType, int team, Vector2i v2) {
+        createEggAt(eggType, gameManager.teamList[team], v2.x, v2.y);
+    }
+
+    public void createEggAt(EggType eggType, Team team, Vector2i v2) {
         createEggAt(eggType, team, v2.x, v2.y);
     }
 }

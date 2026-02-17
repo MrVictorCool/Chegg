@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 public class Main {
 
     static GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-    static JFrame window = new JFrame("Chegg dev1.0.0");
+    static JFrame window = new JFrame("Chegg dev1.1.0");
     public static void main(String[] args) {
         Image icon = null;
         try {

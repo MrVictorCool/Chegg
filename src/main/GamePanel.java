@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import main.tools.Vector2i;
 import tile.Board;
+import ui.UI;
 
 public class GamePanel extends JPanel implements Runnable { 
 
@@ -42,6 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
     Cursor cursor = new Cursor(this, board);
     BufferedImage backBuffer = new BufferedImage(VIRTUAL_SCREEN_WIDTH, VIRTUAL_SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
     public GameManager gameManager = new GameManager(board);
+    UI ui = new UI(board);
     KeyHandler keyHandler = new KeyHandler(board, gameManager);
     MouseHandler mouseHandler = new MouseHandler(cursor, this, board, gameManager);
 
@@ -74,7 +76,6 @@ public class GamePanel extends JPanel implements Runnable {
 
         while (gameThread != null) {
             frameStart = System.nanoTime();
-            update(delta);
             repaint();
             frameRemain = frameStart + frameDuration - System.nanoTime();
             if (frameRemain > 0) {
@@ -90,10 +91,6 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    public void update(double delta) {
-        mouseHandler.scale = getScale();
-    }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -107,6 +104,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         board.draw(bg);
         cursor.draw(bg, this);
+        ui.draw(bg);
         
         
         bg.dispose();

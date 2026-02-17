@@ -8,6 +8,8 @@ import tile.Board;
 
 public class PigEgg extends Egg{
 
+    public boolean hasMoved = false;
+
     public PigEgg() {
         name = "Pig egg";
         imagePath = "/eggs/pig_spawn_egg.png";
