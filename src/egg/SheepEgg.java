@@ -14,25 +14,30 @@ public class SheepEgg extends Egg {
     }
 
     @Override
-    public Vector2i[] getMoves(Board board) {
+    public Vector2i[] getMoves(Board board, Boolean checkForSameTeam) {
         List<Vector2i> moves = new ArrayList<>();
         
-        for (Vector2i vector2i : calculateMovesInVector(new Vector2i(1, 1), board)) {
+        for (Vector2i vector2i : calculateMovesInVector(new Vector2i(1, 1), board, checkForSameTeam)) {
             moves.add(vector2i);
         }
 
-        for (Vector2i vector2i : calculateMovesInVector(new Vector2i(1, -1), board)) {
+        for (Vector2i vector2i : calculateMovesInVector(new Vector2i(1, -1), board, checkForSameTeam)) {
             moves.add(vector2i);
         }
 
-        for (Vector2i vector2i : calculateMovesInVector(new Vector2i(-1, 1), board)) {
+        for (Vector2i vector2i : calculateMovesInVector(new Vector2i(-1, 1), board, checkForSameTeam)) {
             moves.add(vector2i);
         }
 
-        for (Vector2i vector2i : calculateMovesInVector(new Vector2i(-1, -1), board)) {
+        for (Vector2i vector2i : calculateMovesInVector(new Vector2i(-1, -1), board, checkForSameTeam)) {
             moves.add(vector2i);
         }
 
         return moves.toArray(new Vector2i[0]);
+    }
+
+    @Override
+    public Vector2i[] getMoves(Board board) {
+        return getMoves(board, true);
     }
 }

@@ -60,7 +60,8 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
         if (code == MouseEvent.BUTTON1) {
             clickPressed = gp.screenToWorld(mouseX, mouseY);
         } else if (code == MouseEvent.BUTTON2) {
-            System.out.println(board.worldToCoordinate(gp.screenToWorld(mouseX, mouseY)));
+            Vector2i v2i = board.worldToCoordinate(gp.screenToWorld(mouseX, mouseY));
+            System.out.println(v2i + " Red: " + board.board[v2i.x][v2i.y].beingAttackedByTeam[0] + " Blue: " + board.board[v2i.x][v2i.y].beingAttackedByTeam[1]);
         }
     }
 

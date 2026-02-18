@@ -16,25 +16,30 @@ public class PigEgg extends Egg{
     }
 
     @Override
-    public Vector2i[] getMoves(Board board) {
+    public Vector2i[] getMoves(Board board, Boolean checkForSameTeam) {
         List<Vector2i> moves = new ArrayList<>();
         
-        for (Vector2i vector2i : calculateMovesInVector(Vector2i.DOWN, board)) {
+        for (Vector2i vector2i : calculateMovesInVector(Vector2i.DOWN, board, checkForSameTeam)) {
             moves.add(vector2i);
         }
 
-        for (Vector2i vector2i : calculateMovesInVector(Vector2i.UP, board)) {
+        for (Vector2i vector2i : calculateMovesInVector(Vector2i.UP, board, checkForSameTeam)) {
             moves.add(vector2i);
         }
 
-        for (Vector2i vector2i : calculateMovesInVector(Vector2i.LEFT, board)) {
+        for (Vector2i vector2i : calculateMovesInVector(Vector2i.LEFT, board, checkForSameTeam)) {
             moves.add(vector2i);
         }
 
-        for (Vector2i vector2i : calculateMovesInVector(Vector2i.RIGHT, board)) {
+        for (Vector2i vector2i : calculateMovesInVector(Vector2i.RIGHT, board, checkForSameTeam)) {
             moves.add(vector2i);
         }
 
         return moves.toArray(new Vector2i[0]);
+    }
+
+    @Override
+    public Vector2i[] getMoves(Board board) {
+        return getMoves(board, true);
     }
 }

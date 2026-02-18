@@ -15,7 +15,7 @@ public class SkeletonHorseEgg extends Egg {
     }
 
     @Override
-    public Vector2i[] getMoves(Board board) {
+    public Vector2i[] getMoves(Board board, Boolean checkForSameTeam) {
         List<Vector2i> moves = new ArrayList<>();
         for (Vector2i vector2i : calculateMovesInVector(new Vector2i(-1, -2), board)) {
             moves.add(vector2i);
@@ -50,5 +50,10 @@ public class SkeletonHorseEgg extends Egg {
         }
 
         return moves.toArray(new Vector2i[0]);
+    }
+
+    @Override
+    public Vector2i[] getMoves(Board board) {
+        return getMoves(board, true);
     }
 }

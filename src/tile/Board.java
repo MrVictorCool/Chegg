@@ -56,7 +56,11 @@ public class Board {
         }
 
         createEggAt(EggType.VILLAGER, 0, 4, 7);
+        gameManager.makeKing(getEggAt(4, 7), GameManager.teamList[0]);
         createEggAt(EggType.VILLAGER, 1, 4, 0);
+        gameManager.makeKing(getEggAt(4, 0), GameManager.teamList[1]);
+        // createEggAt(EggType.CHICKEN, 0, 4, 6);
+        // createEggAt(EggType.CHICKEN, 1, 4, 1);
         createEggAt(EggType.WANDERING_TRADER, 0, 3, 7);
         createEggAt(EggType.WANDERING_TRADER, 1, 3, 0);
         createEggAt(EggType.HORSE, 0, 1, 7);
@@ -71,6 +75,8 @@ public class Board {
         createEggAt(EggType.PIG, 0, 7, 7);
         createEggAt(EggType.PIG, 1, 0, 0);
         createEggAt(EggType.PIG, 1, 7, 0);
+
+        gameManager.recalculateAttackedTiles();
     }
 
     public void draw(Graphics2D g2) {
@@ -176,14 +182,30 @@ public class Board {
     }
 
     public void createEggAt(EggType eggType, int team, int x, int y) {
-        createEggAt(eggType, gameManager.teamList[team], x, y);
+        createEggAt(eggType, GameManager.teamList[team], x, y);
     }
 
     public void createEggAt(EggType eggType, int team, Vector2i v2) {
-        createEggAt(eggType, gameManager.teamList[team], v2.x, v2.y);
+        createEggAt(eggType, GameManager.teamList[team], v2.x, v2.y);
     }
 
     public void createEggAt(EggType eggType, Team team, Vector2i v2) {
         createEggAt(eggType, team, v2.x, v2.y);
+    }
+
+    public void setTileAttackedBool(int x, int y, int teamInt, boolean attacked) {
+        board[x][y].beingAttackedByTeam[teamInt] = attacked;
+    }
+
+    public void setTileAttackedBool(Vector2i v2, int teamInt, boolean attacked) {
+        setTileAttackedBool(v2.x, v2.y, teamInt, attacked);
+    }
+
+    public boolean getTileAttackedBool(int x, int y, int teamInt) {
+        return board[x][y].beingAttackedByTeam[teamInt];
+    }
+
+    public boolean getTileAttackedBool(Vector2i v2, int teamInt) {
+        return getTileAttackedBool(v2.x, v2.y, teamInt);
     }
 }

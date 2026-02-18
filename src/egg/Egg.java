@@ -22,6 +22,7 @@ public abstract class Egg {
     public Vector2i[] movementVectors;
     public int xCoordinate, yCoordinate, worldX, worldY;
     public Team team;
+    public Boolean king = false;
     String imagePath;
 
     // public Egg(int xCoordinate, int yCoordinate, int worldX, int worldY, Team team) {
@@ -54,7 +55,7 @@ public abstract class Egg {
      * @return
      * A list of posible moves in board coordinates (NOT RELATIVE TO THE CURRENT POSITION) in form of a {@code Vector2i[]}
      */
-    public Vector2i[] getMoves(Board board) {
+    public Vector2i[] getMoves(Board board, Boolean checkForSameTeam) {
         List<Vector2i> moves = new ArrayList<>();
         for (Vector2i vector2i : movementVectors) {
             Vector2i target = getCoordinates().add(vector2i);
@@ -65,11 +66,15 @@ public abstract class Egg {
             } else {
                 sameTeam = board.getEggAt(target).isSameTeamAs(this);
             }
-            if (!sameTeam) {
+            if (!sameTeam || !checkForSameTeam) {
                 moves.add(target);
             }
         }
         return moves.toArray(new Vector2i[0]);
+    }
+
+    public Vector2i[] getMoves(Board board) {
+        return getMoves(board, true);
     }
 
     public void setImage(BufferedImage image) {
@@ -111,14 +116,14 @@ public abstract class Egg {
      * @param board The board from which the limits of size are taken (assumed to be a rectangle)
      * @return An array containing possible moves
      */
-    protected Vector2i[] calculateMovesInVector(Vector2i step, Board board) {
+    protected Vector2i[] calculateMovesInVector(Vector2i step, Board board, boolean checkForSameTeam) {
         List<Vector2i> moves = new ArrayList<>();
         Vector2i pointer = getCoordinates();
         Vector2i target = pointer.add(step);
 
         while (target.isOnBound(board)) {
             if (board.getEggAt(target) != null) {
-                if (!board.getEggAt(target).isSameTeamAs(this)) {
+                if (!board.getEggAt(target).isSameTeamAs(this) || !checkForSameTeam) {
                     moves.add(target);
                     break;
                 }
@@ -130,6 +135,10 @@ public abstract class Egg {
         }
 
         return moves.toArray(new Vector2i[0]);
+    }
+
+    protected Vector2i[] calculateMovesInVector(Vector2i step, Board board) {
+        return calculateMovesInVector(step, board, true);
     }
 
     /**
@@ -149,7 +158,7 @@ public abstract class Egg {
      * @param repetitions Maximum amount of steps
      * @return An array containing possible moves
      */
-    protected Vector2i[] calculateMovesInVector(Vector2i step, Board board, int repetitions) {
+    protected Vector2i[] calculateMovesInVector(Vector2i step, Board board, int repetitions, boolean checkForSameTeam) {
         List<Vector2i> moves = new ArrayList<>();
         Vector2i pointer = getCoordinates();
         Vector2i target = pointer.add(step);
@@ -190,5 +199,11 @@ public abstract class Egg {
         }
 
         return pointer;
+    }
+
+    @Override
+    public String toString() {
+        return "Egg [name=" + name + ", xCoordinate=" + xCoordinate + ", yCoordinate=" + yCoordinate + ", team=" + team
+                + ", king=" + king + "]";
     }
 }

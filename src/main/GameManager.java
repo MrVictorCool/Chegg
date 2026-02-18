@@ -16,7 +16,7 @@ import ui.UI;
 public class GameManager {
     
     Board board;
-    public Team[] teamList;
+    public static Team[] teamList;
     public int currentTeam;
     List<Vector2i> posibleMoves = new ArrayList<>();
     Tile selectedTile;
@@ -29,8 +29,8 @@ public class GameManager {
     public GameManager(Board board) {
         this.board = board;
         teamList = new Team[2];
-        teamList[0] = new Team("Red", Color.decode("#bd0a36"));
-        teamList[1] = new Team("Blue", Color.decode("#0d638b"));
+        teamList[0] = new Team("Red", Color.decode("#bd0a36"), 0);
+        teamList[1] = new Team("Blue", Color.decode("#0d638b"), 1);
         currentTeam = 0;
     }
 
@@ -147,10 +147,24 @@ public class GameManager {
         selectedEgg = board.getEggAt(v2);
         posibleMoves.clear();
 
-        for (Vector2i moveCoordinates : selectedEgg.getMoves(board)) {
-            Vector2i move = moveCoordinates;
-            if (move.x > -1 && move.x < 8 && move.y > -1 && move.y < 8) {
-                posibleMoves.add(move);
+        if (selectedEgg.king) {
+            for (Vector2i move : selectedEgg.getMoves(board)) {
+                boolean differentTeamAttacked = false;
+                for (Team team : teamList) {
+                    if (team.equals(selectedEgg.team)) {continue;}
+                    if (board.getTileAttackedBool(move.x, move.y, team.index)) {
+                        differentTeamAttacked = true;
+                    }
+                }
+                if (move.isOnBound(board) && !differentTeamAttacked) {
+                    posibleMoves.add(move);
+                }
+            }
+        } else {
+            for (Vector2i move : selectedEgg.getMoves(board)) {
+                if (move.isOnBound(board)) {
+                    posibleMoves.add(move);
+                }
             }
         }
 
@@ -174,5 +188,43 @@ public class GameManager {
     private void passTurn() {
         currentTeam = (currentTeam + 1) % teamList.length;
         System.out.println("Current turn is: " + teamList[currentTeam]);
+        recalculateAttackedTiles();
+    }
+
+    public void recalculateAttackedTiles() {
+
+        for (int x = 0; x < board.board.length; x++) {
+            for (int y = 0; y < board.board[0].length; y++) {
+                for (int i = 0; i < board.board[x][y].beingAttackedByTeam.length; i++) {
+                    board.board[x][y].beingAttackedByTeam[i] = false;
+                }
+            }
+        }
+
+        for (int x = 0; x < board.board.length; x++) {
+            for (int y = 0; y < board.board[0].length; y++) {
+                Egg targetEgg = board.getEggAt(x, y);
+                if (targetEgg == null) {continue;}
+                if (targetEgg instanceof ChickenEgg) {
+                    ChickenEgg targetChickenEgg = (ChickenEgg) targetEgg;
+                    Vector2i targetVector = targetChickenEgg.direction.add(Vector2i.LEFT).add(x, y);
+                    if (targetVector.isOnBound(board)) {
+                        board.setTileAttackedBool(targetVector, targetEgg.team.index, true);
+                    }
+                    targetVector = targetChickenEgg.direction.add(Vector2i.RIGHT).add(x, y);
+                    if (targetVector.isOnBound(board)) {
+                        board.setTileAttackedBool(targetVector, targetEgg.team.index, true);
+                    }
+                } else {
+                    for (Vector2i vector2i : targetEgg.getMoves(board, false)) {
+                        board.setTileAttackedBool(vector2i.x, vector2i.y, targetEgg.team.index, true);
+                    }
+                }
+            }
+        }
+    }
+
+    public void makeKing(Egg egg, Team team) {
+        team.setKing(egg);
     }
 }

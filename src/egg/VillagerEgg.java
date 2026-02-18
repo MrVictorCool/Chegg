@@ -16,7 +16,7 @@ public class VillagerEgg extends Egg{
     }
 
     @Override
-    public Vector2i[] getMoves(Board board) {
+    public Vector2i[] getMoves(Board board, Boolean checkForSameTeam) {
         List<Vector2i> moves = new ArrayList<>();
 
         for (int i = -1; i <= 1 ; i++) {
@@ -30,13 +30,14 @@ public class VillagerEgg extends Egg{
                 } else {
                     sameTeam = board.getEggAt(v2i).isSameTeamAs(this);
                 }
-                if (!sameTeam) {
+                if (!sameTeam || !checkForSameTeam) {
                     moves.add(v2i);
                 }
             }
         }
 
-        if (hasMoved) {return moves.toArray(new Vector2i[0]);}
+        //TODO: add a method for checking a tile being attacked by al other teams to replace the (team.index + 1) % 2)) in this section
+        if (hasMoved || board.getTileAttackedBool(getCoordinates(), ((team.index + 1) % 2))) {return moves.toArray(new Vector2i[0]);}
 
         Vector2i targetCoordinates = scanForEggInVector(Vector2i.RIGHT, board);
         Egg target = board.getEggAt(targetCoordinates);
@@ -44,9 +45,15 @@ public class VillagerEgg extends Egg{
         if (target != null) {
             if (target instanceof PigEgg) {
                 pigTarget = (PigEgg) target;
-                if (!pigTarget.hasMoved && pigTarget.isSameTeamAs(this)) {
+
+                if (!pigTarget.hasMoved &&
+                    pigTarget.isSameTeamAs(this) &&
+                    !board.getTileAttackedBool(getCoordinates().add(1, 0), ((team.index + 1) % 2)) &&
+                    !board.getTileAttackedBool(getCoordinates().add(2, 0), ((team.index + 1) % 2))
+                ) {
                     moves.add(getCoordinates().add(2, 0));
                 }
+
             }
         }
 
@@ -55,7 +62,11 @@ public class VillagerEgg extends Egg{
         if (target != null) {
             if (target instanceof PigEgg) {
                 pigTarget = (PigEgg) target;
-                if (!pigTarget.hasMoved && pigTarget.isSameTeamAs(this)) {
+                if (!pigTarget.hasMoved &&
+                    pigTarget.isSameTeamAs(this) &&
+                    board.getTileAttackedBool(targetCoordinates.add(-1, 0), (team.index + 1 % 2)) &&
+                    board.getTileAttackedBool(targetCoordinates.add(-2, 0), (team.index + 1 % 2)) 
+                ) {
                     moves.add(getCoordinates().add(-2, 0));
                 }
             }
@@ -64,6 +75,11 @@ public class VillagerEgg extends Egg{
         return moves.toArray(new Vector2i[0]);
     }
 
-    //TODO: Add check, checkmate and limit moves based on it
+    @Override
+    public Vector2i[] getMoves(Board board) {
+        return getMoves(board, true);
+    }
+
+    //TODO: Add check, checkmate
     //TODO: Make it so a player can win
 }
